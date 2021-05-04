@@ -95,8 +95,8 @@ defmodule Mailchimp.Campaign do
     campaign
   end
 
-  def content(%__MODULE__{links: %{"content" => %Link{href: href}}}) do
-    {:ok, response} = HTTPClient.get(href)
+  def content(%__MODULE__{id: campaign_id}) do
+    {:ok, response} = HTTPClient.get("/campaigns/#{campaign_id}/content")
 
     case response do
       %Response{status_code: 200, body: body} ->

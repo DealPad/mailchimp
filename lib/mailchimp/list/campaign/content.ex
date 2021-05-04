@@ -21,8 +21,8 @@ defmodule Mailchimp.Campaign.Content do
     }
   end
 
-  def update(%__MODULE__{links: %{"self" => %Link{href: href}}}, attrs \\ %{}) do
-    {:ok, response} = HTTPClient.put(href, Jason.encode!(attrs))
+  def update(campaign_id, attrs \\ %{}) do
+    {:ok, response} = HTTPClient.put("/campaigns/#{campaign_id}/content", Jason.encode!(attrs))
 
     case response do
       %Response{status_code: 200, body: body} ->
@@ -33,8 +33,8 @@ defmodule Mailchimp.Campaign.Content do
     end
   end
 
-  def update!(content, attrs \\ %{}) do
-    {:ok, content} = update(content, attrs)
+  def update!(campaign_id, attrs \\ %{}) do
+    {:ok, content} = update(campaign_id, attrs)
     content
   end
 end
