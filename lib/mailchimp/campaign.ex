@@ -111,4 +111,39 @@ defmodule Mailchimp.Campaign do
     {:ok, content} = content(campaign)
     content
   end
+
+  def send(%__MODULE__{id: campaign_id}) do
+    {:ok, response} =
+      HTTPClient.post("/campaigns/#{campaign_id}/actions/send", Jason.encode!(%{}))
+
+    case response do
+      %Response{status_code: 204, body: _body} ->
+        {:ok, "Campaign sent successfully"}
+
+      %Response{status_code: _, body: body} ->
+        {:error, body}
+    end
+  end
+
+  def send!(campaign) do
+    {:ok, response_text} = send(campaign)
+    response_text
+  end
+
+  def send_checklist(%__MODULE__{id: campaign_id}) do
+    {:ok, response} = HTTPClient.get("/campaigns/#{campaign_id}/send-checklist")
+
+    case response do
+      %Response{status_code: 200, body: body} ->
+        {:ok, body}
+
+      %Response{status_code: _, body: body} ->
+        {:error, body}
+    end
+  end
+
+  def send_checklist!(campaign) do
+    {:ok, response} = send_checklist(campaign)
+    response
+  end
 end
